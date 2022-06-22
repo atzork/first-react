@@ -8,17 +8,21 @@ import MyButton from "./components/UI/button/MyButton";
 import {usePosts} from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/Loader/Loader";
+import {useFetching} from "./hooks/useFetching";
 
 function App() {
     const [posts, setPosts] = useState([])
     const [filter, setFilter] = useState({sort: '', query: ''})
     const [modalVisible, setModalVisible] = useState(false)
-    const [isPostsLoading, setIsPostsLoading] = useState(false)
+    const [fetchPosts, isPostsLoading, postsError] = useFetching(async () => {
+        const posts = await PostService.getAll()
+        setPosts(posts)
+    })
 
     const sortedAndSearchedPosts =  usePosts(posts, filter.sort, filter.query)
 
     useEffect(() => {
-        fetchPhotos()
+        fetchPosts()
     },[])
 
     const createPost = (newPost) => {
@@ -26,24 +30,20 @@ function App() {
         setModalVisible(false)
     }
 
-    async function fetchPhotos() {
-        setIsPostsLoading(true)
-        const posts = await PostService.getAll()
-        setPosts(posts)
-        setIsPostsLoading(false)
-    }
-
     const removePost = (post) => setPosts(posts.filter(_post => _post.id !== post.id))
 
   return (
     <div className="App">
-        <MyButton onClick={fetchPhotos}>Get posts</MyButton>
+        <MyButton onClick={fetchPosts}>Get posts</MyButton>
         <MyModal visible={modalVisible} setVisible={setModalVisible}>
             <PostForm create={createPost}/>
         </MyModal>
         <MyButton onClick={() => setModalVisible(true)}>Create post</MyButton>
          <hr style={{margin: '15px 0'}}/>
         <PostFilter filter={filter} setFilter={setFilter} />
+        {
+            postsError && <h3>{postsError}</h3>
+        }
         {
             isPostsLoading
                 ? <div
