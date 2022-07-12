@@ -6,7 +6,8 @@
 
 #root {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .App {
@@ -20,6 +21,14 @@
     padding: 15px;
     border: 2px solid  green;
     margin-top: 15px;
+}
+
+.post__content {
+    padding-right: 10px;
+}
+.post__btns {
+    display: flex;
+    gap: 3px;
 }
 
 .post-enter {
@@ -38,4 +47,18 @@
     transform: translateX(-350px);
     opacity: 0;
     transition: all 500ms ease-in;
+}
+
+.navbar {
+    height: 50px;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    background-color: lightgrey;
+}
+.navbar__links{
+    display: flex;
+    gap: 15px;
+    margin-left: auto;
 }
